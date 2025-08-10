@@ -1,4 +1,4 @@
-.PHONY: all format lint test tests integration_tests docker_tests help extended_tests
+.PHONY: all format lint test tests integration_tests help extended_tests setup_dev clean smoke build dist publish
 
 # Default target executed when no arguments are given to make.
 all: help
@@ -17,7 +17,28 @@ test_watch:
 
 # integration tests are run without the --disable-socket flag to allow network calls
 integration_test integration_tests:
-	uv run pytest $(TEST_FILE)
+	@set -e; \
+	uv run pytest $(TEST_FILE) || code=$$?; \
+	if [ "$$code" -ne 5 ] && [ -n "$$code" ]; then exit $$code; fi
+
+setup_dev:
+	uv sync --all-extras --dev
+	uv run pre-commit install
+
+clean:
+	rm -rf .mypy_cache .ruff_cache .pytest_cache dist build *.egg-info
+
+smoke:
+	uv run python scripts/smoke_test.py
+
+build:
+	uv run python -m build
+
+dist: clean build
+
+publish: dist
+	uv run twine check dist/*
+	@echo "To publish: uv run twine upload -r pypi dist/*"
 
 ######################
 # LINTING AND FORMATTING

@@ -344,16 +344,16 @@ class TestSuperlinkedRetrieverClassProperties:
 
         # Verify it has the expected default by checking the string representation
         field_str = str(query_text_field)
-        assert "default='query_text'" in field_str, (
-            f"Field definition should contain default='query_text', got: {field_str}"
-        )
+        assert (
+            "default='query_text'" in field_str
+        ), f"Field definition should contain default='query_text', got: {field_str}"
 
         # Test that k field has correct default
         k_field = fields["k"]
         k_field_str = str(k_field)
-        assert "default=4" in k_field_str, (
-            f"k field should have default=4, got: {k_field_str}"
-        )
+        assert (
+            "default=4" in k_field_str
+        ), f"k field should have default=4, got: {k_field_str}"
 
     def test_field_descriptions_exist(self) -> None:
         """Test that field descriptions are defined."""

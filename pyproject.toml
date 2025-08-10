@@ -22,6 +22,12 @@ readme = "README.md"
 repository = "https://github.com/langchain-ai/langchain"
 
 [dependency-groups]
+unit = [
+    "pytest<8.0.0,>=7.3.0",
+    "pytest-asyncio<1.0.0,>=0.21.1",
+    "pytest-socket<1.0.0,>=0.7.0",
+    "pytest-watcher<1.0.0,>=0.3.4",
+]
 test = [
     "pytest<8.0.0,>=7.3.0",
     "pytest-asyncio<1.0.0,>=0.21.1",
@@ -32,22 +38,38 @@ test = [
 ]
 codespell = ["codespell<3.0.0,>=2.2.0"]
 test_integration = []
-lint = ["ruff<0.13,>=0.12.2"]
-dev = ["langchain-core"]
+lint = ["ruff<0.6,>=0.5.0"]
+dev = [
+    "langchain-core",
+    "pre-commit>=3.7.0",
+    "build>=1.2.1",
+    "twine>=5.1.0",
+    "wheel>=0.43.0",
+    "ruff<0.6,>=0.5.0",
+    "mypy<2.0,>=1.10",
+    "codespell<3.0.0,>=2.2.0",
+    "pytest<8.0.0,>=7.3.0",
+    "pytest-asyncio<1.0.0,>=0.21.1",
+    "pytest-socket<1.0.0,>=0.7.0",
+    "pytest-watcher<1.0.0,>=0.3.4",
+]
 typing = ["mypy<2.0,>=1.10", "langchain-core"]
 
-[tool.uv.sources]
-langchain-core = { path = "../../core", editable = true }
-langchain-tests = { path = "../../standard-tests", editable = true }
+
 
 [tool.mypy]
-disallow_untyped_defs = "True"
+python_version = "3.10"
+disallow_untyped_defs = true
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "T201"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["T201"]
+"scripts/**/*.py" = ["T201"]
 
 [tool.coverage.run]
 omit = ["tests/*"]
@@ -58,3 +80,7 @@ markers = [
     "compile: mark placeholder test used to compile integration tests without running them",
 ]
 asyncio_mode = "auto"
+
+[tool.codespell]
+skip = ".git,*.lock,*.svg,*.json,*.yml,*.yaml,*.md,*.ipynb,.mypy_cache,.ruff_cache,.venv,dist,build"
+ignore-words-list = "crate,ser,fo"

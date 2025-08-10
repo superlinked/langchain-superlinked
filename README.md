@@ -17,10 +17,8 @@ And you should configure credentials by setting the following environment variab
 `ChatSuperlinked` class exposes chat models from Superlinked.
 
 ```python
-from langchain_superlinked import ChatSuperlinked
-
-llm = ChatSuperlinked()
-llm.invoke("Sing a ballad of LangChain.")
+from langchain_superlinked import SuperlinkedRetriever
+print(SuperlinkedRetriever)
 ```
 
 ## Embeddings
@@ -28,18 +26,14 @@ llm.invoke("Sing a ballad of LangChain.")
 `SuperlinkedEmbeddings` class exposes embeddings from Superlinked.
 
 ```python
-from langchain_superlinked import SuperlinkedEmbeddings
-
-embeddings = SuperlinkedEmbeddings()
-embeddings.embed_query("What is the meaning of life?")
+from langchain_superlinked import SuperlinkedRetriever
+print(SuperlinkedRetriever)
 ```
 
 ## LLMs
 `SuperlinkedLLM` class exposes LLMs from Superlinked.
 
 ```python
-from langchain_superlinked import SuperlinkedLLM
-
-llm = SuperlinkedLLM()
-llm.invoke("The meaning of life is")
+from langchain_superlinked import SuperlinkedRetriever
+print(SuperlinkedRetriever)
 ```
