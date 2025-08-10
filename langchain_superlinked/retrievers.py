@@ -1,4 +1,9 @@
-"""Retriever for Superlinked."""
+"""LangChain retriever backed by Superlinked.
+
+This module adapts Superlinked query execution to LangChain's retriever
+interface. Provide a Superlinked App instance and a `QueryDescriptor`,
+and map a result field to `Document.page_content`.
+"""
 
 from __future__ import annotations
 
@@ -188,16 +193,16 @@ class SuperlinkedRetriever(BaseRetriever):
     def _get_relevant_documents(
         self, query: str, *, run_manager: CallbackManagerForRetrieverRun, **kwargs: Any
     ) -> List[Document]:
-        """
-        Retrieve relevant documents from Superlinked.
+        """Retrieve relevant documents from Superlinked.
 
         Args:
-            query: The user's text query.
-            run_manager: The callback manager for the retriever run.
-            **kwargs: Additional parameters to pass to the Superlinked query at runtime.
+            query: User query text.
+            run_manager: Callback manager for this retriever run.
+            **kwargs: Extra parameters forwarded to Superlinked
+                (for example, weights, filters, `k`).
 
         Returns:
-            A list of relevant LangChain Documents.
+            List of `Document` mapped from Superlinked results.
         """
         # Extract k parameter before building query_params
         k = kwargs.pop("k", self.k)

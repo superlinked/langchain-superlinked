@@ -1,5 +1,6 @@
 """Unit tests for SuperlinkedRetriever."""
 
+import random
 from unittest.mock import Mock
 
 from langchain_core.callbacks import CallbackManagerForRetrieverRun
@@ -40,8 +41,19 @@ class TestSuperlinkedRetrieverCore:
             "category": "landmark",
         }
 
+        mock_entry3 = Mock()
+        mock_entry3.id = "3"
+        mock_entry3.fields = {
+            "text": "Machine learning enables predictive analytics.",
+            "category": "technology",
+        }
+
+        # Randomize entry order to enforce order-independence
+        entries = [mock_entry1, mock_entry2, mock_entry3]
+        random.shuffle(entries)
+
         mock_result = Mock()
-        mock_result.entries = [mock_entry1, mock_entry2]
+        mock_result.entries = entries
         retriever.sl_client.query.return_value = mock_result
 
         # Test the actual method implementation
@@ -50,13 +62,18 @@ class TestSuperlinkedRetrieverCore:
             retriever, "landmarks", run_manager=run_manager
         )
 
-        # Verify results
-        assert len(docs) == 2
-        assert isinstance(docs[0], Document)
-        assert docs[0].page_content == "The Eiffel Tower is in Paris."
-        assert docs[0].metadata == {"id": "1", "category": "landmark"}
-        assert docs[1].page_content == "The Colosseum is in Rome."
-        assert docs[1].metadata == {"id": "2", "category": "landmark"}
+        # Verify results (order-independent)
+        assert len(docs) == 3
+        assert all(isinstance(d, Document) for d in docs)
+        expected = {
+            ("The Eiffel Tower is in Paris.", ("1", "landmark")),
+            ("The Colosseum is in Rome.", ("2", "landmark")),
+            ("Machine learning enables predictive analytics.", ("3", "technology")),
+        }
+        got = {
+            (d.page_content, (d.metadata["id"], d.metadata["category"])) for d in docs
+        }
+        assert got == expected
 
     def test_get_relevant_documents_with_k_parameter(self) -> None:
         """Test retrieval with k parameter limiting results."""
