@@ -33,11 +33,7 @@ jobs:
         shell: bash
         run: |
           TAG="${GITHUB_REF_NAME#v}"
-          PY_VER=$(python - <<'PY'
-import tomllib
-print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])
-PY
-)
+          PY_VER=$(python -c "import tomllib,sys;print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
           if [ -z "$TAG" ]; then
             echo "No tag found in GITHUB_REF_NAME"; exit 1;
           fi
