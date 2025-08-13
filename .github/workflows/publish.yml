@@ -1,0 +1,52 @@
+name: Release (PyPI)
+
+on:
+  # Manual run for publishing to PyPI
+  workflow_dispatch:
+  # Optional: publish on tag push (vX.Y.Z)
+  push:
+    tags: ["v*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write    # Required for OIDC Trusted Publishing
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: astral-sh/setup-uv@v3
+
+      - name: Install deps
+        run: uv sync --all-extras --dev
+
+      - name: Build dists
+        run: uv run python -m build
+
+      - name: Verify tag matches version (only on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        id: get_tag
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          echo "result_tag=$TAG" >> "$GITHUB_OUTPUT"
+          python - <<'PY'
+          import sys, tomllib
+          with open('pyproject.toml', 'rb') as f:
+              data = tomllib.load(f)
+          ver = data['project']['version']
+          if ver != sys.argv[1]:
+              print(f"Version {ver} != tag {sys.argv[1]}")
+              raise SystemExit(1)
+          PY
+          "$TAG"
+
+      - name: Publish distribution 📦 to PyPI (OIDC)
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          verbose: true

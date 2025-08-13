@@ -72,10 +72,15 @@ Workflow file: `.github/workflows/ci.yml`.
 
 ## Releasing
 
-- Bump version in `pyproject.toml` using semantic versioning.
-- Build artifacts: `make dist`
-- Validate: `uv run twine check dist/*`
-- Publish to PyPI: `uv run twine upload -r pypi dist/*`
+- Preferred: tag-based OIDC publish
+  - Ensure PyPI Trusted Publisher is configured for this repo.
+  - Bump version in `pyproject.toml` using semantic versioning.
+  - Tag and push: `git tag vX.Y.Z && git push origin vX.Y.Z`
+  - CI will build and publish automatically.
+- Manual (fallback):
+  - Build artifacts: `make dist`
+  - Validate: `uv run twine check dist/*`
+  - Publish to PyPI: `uv run twine upload -r pypi dist/*`
 
 After publish, open/refresh the docs PR in the LangChain monorepo to reference the new version if needed. See LangChain’s integration guide for the process: [How to contribute an integration](https://python.langchain.com/docs/contributing/how_to/integrations/#how-to-contribute-an-integration).
 
