@@ -1,6 +1,7 @@
 ## langchain-superlinked
 
 Integration package that exposes Superlinked retrieval capabilities via the standard LangChain retriever interface. It lets you plug a Superlinked-powered retriever into LangChain RAG pipelines while keeping your vector storage and schema choices flexible.
+If you want to dive deeper into how Superlinked's mixture-of-encoders algorithm is different, [learn more here](https://links.superlinked.com/get_demo_langchain).
 
 ### Install
 
